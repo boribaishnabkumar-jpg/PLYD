@@ -1,1 +1,71 @@
-<!-- PLYD Website -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10131d">
+<title>PLYD — Learn Something New</title>
+<style>
+:root{--bg:#0c1019;--panel:#141b29;--panel2:#1b2434;--line:#293449;--text:#eef3ff;--muted:#9aa8bf;--accent:#8b9cff;--accent2:#66dfc0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% -20%,#26345a 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{border-right:1px solid var(--line);padding:24px 16px;background:#0d131eaa;display:flex;flex-direction:column;gap:26px}.brand{display:flex;align-items:center;gap:11px;padding:0 9px}.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#8b9cff,#66dfc0);display:grid;place-items:center;color:#111827;font-weight:900;font-size:19px}.brand b{font-size:21px;letter-spacing:2px}.tag{color:var(--muted);font-size:11px;letter-spacing:.7px}.navlabel{color:#75839a;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:0 10px;margin-bottom:8px}.nav{display:grid;gap:5px}.nav button{border:0;color:#b7c2d5;background:transparent;text-align:left;padding:11px 12px;border-radius:11px;display:flex;gap:12px;align-items:center}.nav button.active,.nav button:hover{background:var(--panel2);color:white}.ico{width:20px;text-align:center;font-size:17px}.sidebottom{margin-top:auto;border:1px solid var(--line);border-radius:14px;padding:13px;color:var(--muted);font-size:12px}.sidebottom b{color:var(--text);display:block;margin-bottom:4px}
+main{padding:26px clamp(18px,4vw,54px);max-width:1200px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:44px}.eyebrow{color:var(--accent2);font-size:11px;font-weight:800;letter-spacing:2px}.avatar{width:36px;height:36px;border:1px solid var(--line);background:var(--panel);border-radius:50%;display:grid;place-items:center}
+.hero{text-align:center;max-width:760px;margin:0 auto 30px}.hero h1{font-size:clamp(34px,5vw,55px);line-height:1.08;letter-spacing:-2px;margin:12px 0}.hero h1 span{background:linear-gradient(90deg,#a8b4ff,#70e4c7);background-clip:text;color:transparent}.hero p{color:var(--muted);margin:0 auto;max-width:520px}
+.chatbox{max-width:790px;margin:28px auto 20px;background:#151e2d;border:1px solid #35425b;border-radius:20px;padding:15px;box-shadow:0 20px 70px #0004}.chatbox textarea{resize:vertical;min-height:58px;max-height:150px;width:100%;border:0;outline:0;background:transparent;color:var(--text);font:inherit;padding:8px}.chattools{display:flex;align-items:center;justify-content:space-between;gap:10px}.hint{font-size:11px;color:var(--muted)}.send{border:0;border-radius:12px;background:linear-gradient(135deg,#9ca9ff,#66dfc0);color:#101827;font-weight:800;padding:10px 17px}.chips{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:16px auto 36px}.chip{border:1px solid var(--line);background:#111a28;color:#cbd5e6;padding:9px 13px;border-radius:99px;font-size:12px}.chip:hover{border-color:var(--accent);color:white}
+.sectionhead{display:flex;align-items:end;justify-content:space-between;margin:30px 0 13px}.sectionhead h2{font-size:17px;margin:0}.sectionhead small{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.tile{border:1px solid var(--line);background:linear-gradient(145deg,#182235,#111925);border-radius:17px;padding:17px;min-height:145px}.tile .symbol{font-size:22px;margin-bottom:15px}.tile h3{font-size:14px;margin:0 0 5px}.tile p{font-size:12px;color:var(--muted);margin:0}.tile button{margin-top:13px;border:0;background:transparent;color:var(--accent2);padding:0;font-size:12px;font-weight:700}
+.results{max-width:790px;margin:20px auto;display:none}.bubble{background:var(--panel2);border:1px solid var(--line);border-radius:15px;padding:15px;margin:10px 0;color:#dce5f5}.bubble.user{background:#27324a}.notice{font-size:11px;color:#e6c98a;margin-top:10px}
+.page{display:none}.page.active{display:block}.resource{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px;border:1px solid var(--line);border-radius:14px;margin:10px 0;background:var(--panel)}.resource p{margin:3px 0 0;color:var(--muted);font-size:12px}.resource a{color:var(--accent2);text-decoration:none;white-space:nowrap;font-size:12px}
+footer{text-align:center;color:#68778e;font-size:11px;padding:35px 0 10px}
+@media(max-width:760px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--line);padding:12px 14px;gap:10px}.brand{padding:0}.navlabel,.sidebottom{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:8px 10px;font-size:12px}.nav button .ico{font-size:14px}.top{margin-bottom:35px}.grid{grid-template-columns:1fr}.tile{min-height:unset}.hero h1{letter-spacing:-1.3px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="logo">P</div><div><b>PLYD</b><div class="tag">LEARN SOMETHING NEW</div></div></div>
+  <div><div class="navlabel">WORKSPACE</div><nav class="nav">
+    <button class="active" data-page="home"><span class="ico">⌂</span> Home</button>
+    <button data-page="learn"><span class="ico">✦</span> Learn</button>
+    <button data-page="videos"><span class="ico">▷</span> Videos</button>
+    <button data-page="music"><span class="ico">♫</span> Music</button>
+  </nav></div>
+  <div class="sidebottom"><b>PLYD preview</b>This is your first front-end prototype. AI and media services will be connected in later steps.</div>
+</aside>
+<main>
+  <div class="top"><div class="eyebrow">YOUR SPACE TO DISCOVER</div><div class="avatar">✧</div></div>
+  <section class="page active" id="home">
+    <div class="hero"><div class="eyebrow">WELCOME TO PLYD</div><h1>What will you <span>learn today?</span></h1><p>Ask a question, explore a new idea, or find something worth listening to. Your curiosity starts here.</p></div>
+    <div class="chatbox"><textarea id="prompt" placeholder="Ask PLYD anything…"></textarea><div class="chattools"><span class="hint">↵ Enter to send · Shift + Enter for a new line</span><button class="send" id="send">Ask PLYD&nbsp; ↑</button></div></div>
+    <div class="chips"><button class="chip" data-prompt="Explain quantum physics in simple words">Explain a difficult topic</button><button class="chip" data-prompt="Teach me one interesting fact about space">Teach me something new</button><button class="chip" data-prompt="Create a 5-question quiz about world history">Create a quick quiz</button></div>
+    <div class="results" id="results"></div>
+    <div class="sectionhead"><h2>Explore your interests</h2><small>Choose a starting point</small></div>
+    <div class="grid">
+      <article class="tile"><div class="symbol">🧠</div><h3>Learn & understand</h3><p>Clear explanations, study help and practice questions.</p><button data-go="learn">Explore learning →</button></article>
+      <article class="tile"><div class="symbol">▶️</div><h3>Watch & discover</h3><p>Find educational videos and helpful visual lessons.</p><button data-go="videos">Explore videos →</button></article>
+      <article class="tile"><div class="symbol">🎧</div><h3>Listen & focus</h3><p>Find music and audio for study, focus and relaxation.</p><button data-go="music">Explore music →</button></article>
+    </div>
+  </section>
+  <section class="page" id="learn"><div class="eyebrow">GROW YOUR KNOWLEDGE</div><h1>Learn something new.</h1><p style="color:var(--muted)">Pick a subject to start exploring. The AI tutor will be connected in a later development step.</p><div class="grid">
+    <article class="tile"><div class="symbol">🔬</div><h3>Science</h3><p>Discover how the world works.</p><button data-ask="Give me a beginner-friendly science lesson">Start learning →</button></article>
+    <article class="tile"><div class="symbol">🌍</div><h3>History & culture</h3><p>Explore people, places and events.</p><button data-ask="Teach me an interesting history topic">Start learning →</button></article>
+    <article class="tile"><div class="symbol">💻</div><h3>Technology</h3><p>Understand coding and modern tech.</p><button data-ask="Teach me a beginner technology concept">Start learning →</button></article>
+  </div></section>
+  <section class="page" id="videos"><div class="eyebrow">WATCH TO UNDERSTAND</div><h1>Video discovery</h1><p style="color:var(--muted)">Search YouTube for lessons and explainers. Embedded playback and curated results can be added next.</p><div class="resource"><div><b>Search educational videos</b><p>Find tutorials, lectures and explainers.</p></div><a href="https://www.youtube.com/results?search_query=educational+videos" target="_blank" rel="noopener">Open YouTube ↗</a></div></section>
+  <section class="page" id="music"><div class="eyebrow">SOUNDTRACK YOUR DAY</div><h1>Music & focus</h1><p style="color:var(--muted)">Find playlists through supported music services. Full playback integration requires provider approval and licensing.</p><div class="resource"><div><b>Study and focus music</b><p>Search playlists on Spotify.</p></div><a href="https://open.spotify.com/search/study%20focus" target="_blank" rel="noopener">Explore Spotify ↗</a></div><div class="resource"><div><b>Music discovery</b><p>Explore music on Apple Music.</p></div><a href="https://music.apple.com/us/browse" target="_blank" rel="noopener">Explore Apple Music ↗</a></div></section>
+  <footer>PLYD · Learn Something New · Prototype 0.1</footer>
+</main>
+</div>
+<script>
+const pages=[...document.querySelectorAll('.page')], nav=[...document.querySelectorAll('[data-page]')];
+function go(id){pages.forEach(p=>p.classList.toggle('active',p.id===id));nav.forEach(n=>n.classList.toggle('active',n.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'})}
+nav.forEach(n=>n.addEventListener('click',()=>go(n.dataset.page)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+const prompt=document.getElementById('prompt'), results=document.getElementById('results');
+function ask(q){if(!q.trim())return;go('home');results.style.display='block';results.innerHTML='<div class="bubble user"></div><div class="bubble"><b>PLYD preview</b><p>Thanks for your question! This prototype currently demonstrates the interface. To provide real answers, the next step is connecting a secure AI backend and model API.</p><div class="notice">Demo mode — no live AI service is connected yet.</div></div>';results.querySelector('.user').textContent=q;prompt.value='';results.scrollIntoView({behavior:'smooth',block:'center'});}
+document.getElementById('send').addEventListener('click',()=>ask(prompt.value));
+prompt.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(prompt.value)}});
+document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{prompt.value=b.dataset.prompt;prompt.focus()}));
+document.querySelectorAll('[data-ask]').forEach(b=>b.addEventListener('click',()=>ask(b.dataset.ask)));
+</script>
+</body>
+</html>
