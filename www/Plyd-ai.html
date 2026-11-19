@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101019">
+<title>Plyd AI</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#101019;color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:18px;background:#191526;
+ display:flex;align-items:center;gap:12px;
+ border-bottom:1px solid #302541;
+}
+.logo{
+ background:#8146db;padding:12px;
+ border-radius:13px;font-size:22px;
+}
+header h2{margin:0;color:#c5a4ff}
+header small{color:#aaa}
+main{
+ max-width:750px;margin:auto;
+ padding:20px 15px;
+}
+.welcome{text-align:center;margin:55px 0 30px}
+.welcome h1{font-size:32px;color:#c5a4ff}
+.welcome p{color:#aaa}
+#messages{
+ display:flex;flex-direction:column;
+ gap:14px;padding-bottom:20px;
+}
+.message{
+ padding:13px 16px;border-radius:16px;
+ max-width:88%;line-height:1.5;
+ white-space:pre-wrap;overflow-wrap:anywhere;
+}
+.user{
+ background:#7540c5;align-self:flex-end;
+}
+.bot{
+ background:#252033;align-self:flex-start;
+}
+.composer{
+ position:sticky;bottom:0;
+ background:#101019;padding:12px 0 18px;
+}
+.inputbox{
+ display:flex;gap:8px;align-items:center;
+ background:#252033;padding:9px;
+ border:1px solid #49365f;border-radius:18px;
+}
+input{
+ flex:1;min-width:0;background:transparent;
+ border:0;outline:0;color:white;
+ font-size:16px;padding:10px;
+}
+button{
+ border:0;border-radius:12px;
+ padding:12px;background:#8247dc;
+ color:white;font-size:16px;
+ cursor:pointer;
+}
+.tools{
+ display:flex;justify-content:space-between;
+ align-items:center;margin-top:12px;
+ color:#aaa;font-size:12px;
+}
+.tools button{background:#302442}
+#status{text-align:center;color:#aaa;font-size:12px}
+footer{text-align:center;color:#777;font-size:11px;padding:20px}
+</style>
+</head>
+
+<body>
+<header>
+ <div class="logo">✦</div>
+ <div>
+  <h2>Plyd AI</h2>
+  <small>Your AI. Your World.</small>
+ </div>
+</header>
+
+<main>
+ <section class="welcome" id="welcome">
+  <h1>Hello, I'm Plyd AI ✨</h1>
+  <p>Your intelligent multilingual assistant.</p>
+  <p>How can I help you today?</p>
+ </section>
+
+ <div id="messages"></div>
+ <div id="status">Ready to chat</div>
+
+ <section class="composer">
+  <div class="inputbox">
+   <input id="question" placeholder="Ask Plyd AI anything..." />
+   <button onclick="sendMessage()">➤</button>
+  </div>
+  <div class="tools">
+   <button onclick="startVoice()">🎤 Voice</button>
+   <button onclick="newChat()">＋ New Chat</button>
+   <button onclick="toggleSpeech()">🔊 Voice replies</button>
+  </div>
+ </section>
+</main>
+
+<footer>Powered by Plyd AI</footer>
+
+<script>
+const API_URL = "";
+
+let voiceReplies = true;
+let history = [];
+
+const messages = document.getElementById("messages");
+const question = document.getElementById("question");
+const statusText = document.getElementById("status");
+
+function addMessage(text, type){
+ const div = document.createElement("div");
+ div.className = "message " + type;
+ div.textContent = text;
+ messages.appendChild(div);
+ window.scrollTo(0,document.body.scrollHeight);
+}
+
+async function sendMessage(){
+ const text = question.value.trim();
+ if(!text) return;
+
+ document.getElementById("welcome").style.display="none";
+ question.value="";
+ addMessage(text,"user");
+ history.push({role:"user",content:text});
+
+ if(!API_URL){
+  const reply = "Welcome to Plyd AI! 💜 Your chatbot interface is ready. The secure AI backend still needs to be connected before I can answer questions.";
+  addMessage(reply,"bot");
+  statusText.textContent="Backend connection pending";
+  return;
+ }
+
+ statusText.textContent="Plyd AI is thinking...";
+
+ try{
+  const response = await fetch(API_URL,{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({messages:history})
+  });
+
+  if(!response.ok) throw new Error("Server error");
+  const data = await response.json();
+  const answer = data.reply;
+
+  addMessage(answer,"bot");
+  history.push({role:"assistant",content:answer});
+
+  if(voiceReplies) speak(answer);
+  statusText.textContent="Ready to chat";
+
+ }catch(error){
+  addMessage("Sorry, connection failed. Please try again later.","bot");
+  statusText.textContent="Connection error";
+ }
+}
+
+function newChat(){
+ history=[];
+ messages.innerHTML="";
+ document.getElementById("welcome").style.display="block";
+ statusText.textContent="New chat started";
+ speechSynthesis.cancel();
+}
+
+function toggleSpeech(){
+ voiceReplies=!voiceReplies;
+ statusText.textContent=voiceReplies?
+ "Voice replies enabled":"Voice replies disabled";
+}
+
+function speak(text){
+ if(!("speechSynthesis" in window)) return;
+ speechSynthesis.cancel();
+ const speech=new SpeechSynthesisUtterance(text);
+ speechSynthesis.speak(speech);
+}
+
+function startVoice(){
+ const Recognition=window.SpeechRecognition||
+ window.webkitSpeechRecognition;
+
+ if(!Recognition){
+  alert("Voice input is not supported by this browser.");
+  return;
+ }
+
+ const recognition=new Recognition();
+ recognition.lang="auto";
+ recognition.interimResults=false;
+
+ recognition.onresult=(event)=>{
+  question.value=event.results[0][0].transcript;
+  sendMessage();
+ };
+ recognition.onerror=()=>{
+  statusText.textContent="Voice recognition unavailable";
+ };
+ recognition.start();
+ statusText.textContent="Listening...";
+}
+
+question.addEventListener("keydown",function(event){
+ if(event.key==="Enter") sendMessage();
+});
+</script>
+</body>
+</html>
