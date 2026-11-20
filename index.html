@@ -61,7 +61,43 @@ function go(id){pages.forEach(p=>p.classList.toggle('active',p.id===id));nav.for
 nav.forEach(n=>n.addEventListener('click',()=>go(n.dataset.page)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
 const prompt=document.getElementById('prompt'), results=document.getElementById('results');
-function ask(q){if(!q.trim())return;go('home');results.style.display='block';results.innerHTML='<div class="bubble user"></div><div class="bubble"><b>PLYD preview</b><p>Thanks for your question! This prototype currently demonstrates the interface. To provide real answers, the next step is connecting a secure AI backend and model API.</p><div class="notice">Demo mode — no live AI service is connected yet.</div></div>';results.querySelector('.user').textContent=q;prompt.value='';results.scrollIntoView({behavior:'smooth',block:'center'});}
+const API_URL = "https://plyd-chatbot-api.boribaishnabkumar.workers.dev";
+
+async function ask(q) {
+  if (!q.trim()) return;
+
+  go('home');
+  results.style.display = 'block';
+  results.innerHTML = '<div class="bubble">Thinking...</div>';
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: q }]
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error || 'Something went wrong');
+
+    results.innerHTML = '';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = data.reply;
+    results.appendChild(bubble);
+
+  } catch (error) {
+    results.textContent = 'Sorry! ' + error.message;
+  }
+
+  prompt.value = '';
+  results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 document.getElementById('send').addEventListener('click',()=>ask(prompt.value));
 prompt.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(prompt.value)}});
 document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{prompt.value=b.dataset.prompt;prompt.focus()}));
