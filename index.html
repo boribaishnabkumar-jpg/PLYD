@@ -55,20 +55,60 @@ footer{text-align:center;color:#68778e;font-size:11px;padding:35px 0 10px}
   <footer>PLYD · Learn Something New · Prototype 0.1</footer>
 </main>
 </div>
+
 <script>
-const pages=[...document.querySelectorAll('.page')], nav=[...document.querySelectorAll('[data-page]')];
-function go(id){pages.forEach(p=>p.classList.toggle('active',p.id===id));nav.forEach(n=>n.classList.toggle('active',n.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'})}
-nav.forEach(n=>n.addEventListener('click',()=>go(n.dataset.page)));
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
-const prompt=document.getElementById('prompt'), results=document.getElementById('results');
 const API_URL = "https://plyd-chatbot-api.boribaishnabkumar.workers.dev";
 
+const pages = [...document.querySelectorAll('.page')];
+const nav = [...document.querySelectorAll('[data-page]')];
+
+const prompt = document.getElementById('prompt');
+const results = document.getElementById('results');
+const sendButton = document.getElementById('send');
+
+let history = [];
+let isSending = false;
+
+function go(id) {
+  pages.forEach(p => p.classList.toggle('active', p.id === id));
+  nav.forEach(n => n.classList.toggle('active', n.dataset.page === id));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+nav.forEach(n => {
+  n.addEventListener('click', () => go(n.dataset.page));
+});
+
+document.querySelectorAll('[data-go]').forEach(b => {
+  b.addEventListener('click', () => go(b.dataset.go));
+});
+
+function addBubble(text, type) {
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble ' + type;
+  bubble.textContent = text;
+  results.appendChild(bubble);
+  return bubble;
+}
+
 async function ask(q) {
-  if (!q.trim()) return;
+  q = q.trim();
+
+  if (!q || isSending) return;
 
   go('home');
   results.style.display = 'block';
-  results.innerHTML = '<div class="bubble">Thinking...</div>';
+
+  addBubble(q, 'user');
+  prompt.value = '';
+
+  history.push({ role: 'user', content: q });
+
+  isSending = true;
+  sendButton.disabled = true;
+  sendButton.textContent = 'Thinking...';
+
+  const loading = addBubble('PLYD is thinking...', 'bot');
 
   try {
     const response = await fetch(API_URL, {
@@ -77,31 +117,63 @@ async function ask(q) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        messages: [{ role: 'user', content: q }]
+        messages: history
       })
     });
 
     const data = await response.json();
 
-    if (!response.ok) throw new Error(data.error || 'Something went wrong');
+    if (!response.ok) {
+      throw new Error(data.error || 'Server error');
+    }
 
-    results.innerHTML = '';
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.textContent = data.reply;
-    results.appendChild(bubble);
+    if (!data.reply || typeof data.reply !== 'string') {
+      throw new Error('Invalid AI response');
+    }
+
+    loading.remove();
+    addBubble(data.reply, 'bot');
+
+    history.push({
+      role: 'assistant',
+      content: data.reply
+    });
 
   } catch (error) {
-    results.textContent = 'Sorry! ' + error.message;
-  }
+    loading.textContent = 'Sorry! ' + error.message;
+    history.pop();
 
-  prompt.value = '';
-  results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } finally {
+    isSending = false;
+    sendButton.disabled = false;
+    sendButton.textContent = 'Ask PLYD ↑';
+
+    results.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }
 }
-document.getElementById('send').addEventListener('click',()=>ask(prompt.value));
-prompt.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(prompt.value)}});
-document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{prompt.value=b.dataset.prompt;prompt.focus()}));
-document.querySelectorAll('[data-ask]').forEach(b=>b.addEventListener('click',()=>ask(b.dataset.ask)));
+
+sendButton.addEventListener('click', () => ask(prompt.value));
+
+prompt.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    ask(prompt.value);
+  }
+});
+
+document.querySelectorAll('[data-prompt]').forEach(b => {
+  b.addEventListener('click', () => {
+    prompt.value = b.dataset.prompt;
+    prompt.focus();
+  });
+});
+
+document.querySelectorAll('[data-ask]').forEach(b => {
+  b.addEventListener('click', () => ask(b.dataset.ask));
+});
 </script>
 </body>
 </html>
